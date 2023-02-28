@@ -19,6 +19,26 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+/**
+ * Create a new user
+ */
+
+router.post('/', async (req, res, next) => {
+    try {
+        let params = {"id": req.query.id, "nom_client": req.query.nom_client, "mail_client": req.query.mail_client, "passwd": req.query.passwd, "created_at": new Date().toDateInputValue(), "updated_at": new Date().toDateInputValue()};
+        let user = await db('client').insert(params);
+        if (user>0) {
+            res.status(204).json({});
+        }
+        else{
+            next();
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 
 
 
