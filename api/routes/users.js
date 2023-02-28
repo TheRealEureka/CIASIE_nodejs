@@ -10,7 +10,7 @@ router.get('/', async (req, res, next) => {
     try{
         let client = await db('client');
         if (client) {
-            res.json({type: "collection", count: client.length, orders: client});
+            res.json({type: "collection", count: client.length, users: client});
         } else {
             next();
         }
