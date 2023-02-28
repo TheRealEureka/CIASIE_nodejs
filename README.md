@@ -2,23 +2,23 @@
 NodeJS project
 
 ## Installation
-1. Installation des dépendances
+1. Définition des variables d'environnement
 ```bash
-cd api/ 
-npm install 
+cp .env.sample .env
 ```
-2. Création du fichier de configuration
+2. Installation des dépendances
 ```bash
-cp .env.example .env
+docker compose run --rm api npm install
 ```
-3. Remplir le fichier de configuration
+3. Lancement du conteneur
 ```bash
-nano .env
+docker compose up -d
 ```
-4. Lancement de docker
+4. Execution des commandes au sein du conteneur
 ```bash
-docker-compose up
+docker compose exec api <commande>
 ```
+
 
 ## Membres du groupe
 
