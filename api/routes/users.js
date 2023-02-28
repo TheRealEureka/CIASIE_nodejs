@@ -3,6 +3,9 @@ const router = express.Router();
 const db = require('../ConnectionFactory');
 
 
+/**
+ * Get all users
+ */
 router.get('/', async (req, res, next) => {
     try{
         let client = await db('client');

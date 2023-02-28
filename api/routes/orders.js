@@ -3,7 +3,9 @@ const router = express.Router();
 const db = require('../ConnectionFactory');
 
 
-
+/**
+ * Get all orders
+ */
 router.get('/', async (req, res, next) => {
     try{
         let orders = await db('commande');
@@ -16,6 +18,11 @@ router.get('/', async (req, res, next) => {
         next(err)
     }
 })
+
+
+/**
+ * Change an order by id, only the "livraison", "nom", "mail" and "updated_at" can be changed
+ */
 router.put('/:id', async (req, res, next) => {
     try {
         let params = {"livraison" : req.query.livraison, "nom": req.query.nom, "mail": req.query.mail, updated_at: new Date().toDateInputValue()};
@@ -31,6 +38,11 @@ router.put('/:id', async (req, res, next) => {
         next(err);
     }
 });
+
+
+/**
+ * Get an order by his id
+ */
 router.get('/:id', async (req, res, next) => {
     try {
         let order = await db('commande').where({id: req.params.id});
