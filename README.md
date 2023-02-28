@@ -4,7 +4,7 @@ NodeJS project
 ## Installation
 1. Définition des variables d'environnement
 ```bash
-cp .env.example .env
+cp .env.sample .env
 ```
 2. Installation des dépendances
 ```bash
