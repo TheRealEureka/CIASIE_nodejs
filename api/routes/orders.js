@@ -24,6 +24,8 @@ router.get('/', async (req, res, next) => {
  * Change an order by id, only the "livraison", "nom", "mail" and "updated_at" can be changed
  */
 router.put('/:id', async (req, res, next) => {
+    ///!\ ajouter bibiliotheque JOI pour valider les requetes
+
     try {
         let params = {"livraison" : req.query.livraison, "nom": req.query.nom, "mail": req.query.mail, updated_at: new Date().toDateInputValue()};
         let order = await db('commande').where({id: req.params.id}).update(params);
@@ -89,6 +91,52 @@ router.get('/:id/items', async (req, res, next) => {
         next(err);
     }
 })
+
+
+/**
+ * Create a new order
+ */
+
+router.put('/', async (req, res, next) => {
+    try {
+        let params = {"client_name" : req.query.client_name, "client_mail": req.query.client_mail, "delivery_date": { "date" : req.query.delivery.date, "time" : req.query.delivery.time}, "id": req.query.id, "total_amount": req.query.total_amount};
+        let order = await db('commande').insert(params);
+        if (order>0) {
+            res.status(204).json({});
+        }
+        else{
+            next();
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
