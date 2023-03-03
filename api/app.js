@@ -22,6 +22,6 @@ app.use('/orders', orderRouter);
 app.use('/users', usersRouter);
 
 app.use((req, res, next) => {
-    res.json({error: 'not found'});
+    res.json({error404: 'not found'});
 })
 module.exports = app;
