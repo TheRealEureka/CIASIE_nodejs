@@ -11,8 +11,7 @@ CREATE TABLE `client` (
   `nom_client` varchar(128) NOT NULL,
   `mail_client` varchar(256) NOT NULL,
   `passwd` varchar(256) NOT NULL,
-  `cumul_achats` decimal(8,2) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`idClient`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -24,32 +23,33 @@ CREATE TABLE `commande` (
   `montant` decimal(8,2) DEFAULT NULL,
   `remise` decimal(8,2) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `ref_paiement` varchar(128) DEFAULT NULL,
+  'idLigne' int(11) DEFAULT NULL,
   `date_paiement` datetime DEFAULT NULL,
   `mode_paiement` int(11) DEFAULT NULL,
-  `status` int(11) NOT NULL DEFAULT 1
+
+    PRIMARY KEY (`idCmd`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `produit`;
 CREATE TABLE `produit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idProduit` int(11) NOT NULL AUTO_INCREMENT,
   'categorie' varchar(128) NOT NULL,
   `nom` varchar(128) NOT NULL,
   `description` text NOT NULL,
   `prix` decimal(8,2) NOT NULL,
   `image` varchar(256) DEFAULT NULL,
   `stock` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`idProduit`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `produit_commande`;
 CREATE TABLE `produit_commande` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idLigne` int(11) NOT NULL AUTO_INCREMENT,
   `produit_id` int(11) NOT NULL,
-  `commande_id` varchar(128) NOT NULL,
   `quantite` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  'PrixTotal' decimal(8,2) NOT NULL,
+  PRIMARY KEY (`idLigne`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
