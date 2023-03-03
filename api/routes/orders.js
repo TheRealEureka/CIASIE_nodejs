@@ -23,25 +23,26 @@ router.get('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
     try {
-        const { error } = updateOrderSchema.validate(req.query);
+        const {error } = commandeSchema.validate(req.query);
         if (error) {
             return res.status(400).json({ error: error.details[0].message });
+        }
         let params = {
             "livraison": req.query.livraison,
             "nom": req.query.nom,
             "mail": req.query.mail,
             updated_at: new Date().toDateInputValue()
         };
-            let order = await db('commande').where({id: req.params.id}).update(params);
-            if (order > 0) {
-                res.status(204).json({});
-            } else {
-                next();
-            }
-        } catch (err) {
-            next(err);
+        let order = await db('commande').where({id: req.params.id}).update(params);
+        if (order > 0) {
+            res.status(204).json({});
+        } else {
+            next();
         }
-    });
+    } catch (err) {
+        next(err);
+    }
+});
 
 
 
@@ -115,10 +116,14 @@ router.put('/', async (req, res, next) => {
         };
 
         let order = await db('commande').insert(params);
-
-        res.status(204).json({});
-
-    } catch (err) {
+        if (order>0) {
+            res.status(204).json({});
+        }
+        else{
+            next();
+        }
+    }
+    catch (err) {
         next(err);
     }
 })
