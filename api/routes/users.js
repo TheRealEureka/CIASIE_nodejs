@@ -7,14 +7,14 @@ const clientSchema = require('../validatorJoi/validatorClient.js');
  * Get all users
  */
 router.get('/', async (req, res, next) => {
-    try{
+    try {
         let client = await db('client');
         if (client) {
             res.json({type: "collection", count: client.length, users: client});
         } else {
             next();
         }
-    }catch(err){
+    } catch (err) {
         next(err)
     }
 })
@@ -24,14 +24,21 @@ router.get('/', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     try {
-        const { error } = clientSchema.validate(req.query);
+        const {error} = clientSchema.validate(req.query);
         if (error) {
-            return res.status(400).json({ error: error.details[0].message });
+            return res.status(400).json({error: error.details[0].message});
         }
 
-        let params = {"id": req.query.id, "nom_client": req.query.nom_client, "mail_client": req.query.mail_client, "passwd": req.query.passwd , "created_at": new Date().toDateInputValue(), "updated_at": new Date().toDateInputValue()};
+        let params = {
+            "id": req.query.id,
+            "nom_client": req.query.nom_client,
+            "mail_client": req.query.mail_client,
+            "passwd": req.query.passwd,
+            "created_at": new Date().toDateInputValue(),
+            "updated_at": new Date().toDateInputValue()
+        };
         let user = await db('client').insert(params);
-        if (user>0) {
+        if (user > 0) {
             res.status(204).json({});
         } else {
             next();
@@ -40,9 +47,6 @@ router.post('/', async (req, res, next) => {
         next(err);
     }
 });
-
-
-
 
 
 module.exports = router;
