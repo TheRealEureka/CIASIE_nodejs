@@ -8,15 +8,14 @@ const usersRouter = require('./routes/users');
 
 const app = express();
 
-Date.prototype.toDateInputValue = (function() {
+Date.prototype.toDateInputValue = (function () {
     let local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-    return local.toJSON().slice(0,10);
+    return local.toJSON().slice(0, 10);
 });
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({extended: false}));
 
 app.use('/', indexRouter);
 app.use('/orders', orderRouter);

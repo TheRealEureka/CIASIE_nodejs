@@ -26,13 +26,22 @@ router.put('/:id', async (req, res, next) => {
         const { error } = updateOrderSchema.validate(req.query);
         if (error) {
             return res.status(400).json({ error: error.details[0].message });
+        let params = {
+            "livraison": req.query.livraison,
+            "nom": req.query.nom,
+            "mail": req.query.mail,
+            updated_at: new Date().toDateInputValue()
+        };
+            let order = await db('commande').where({id: req.params.id}).update(params);
+            if (order > 0) {
+                res.status(204).json({});
+            } else {
+                next();
+            }
+        } catch (err) {
+            next(err);
         }
-
-        // your code to update order
-    } catch (err) {
-        next(err);
-    }
-});
+    });
 
 
 
@@ -44,7 +53,7 @@ router.get('/:id', async (req, res, next) => {
         let order = await db('commande').where({id: req.params.id});
         if (order.length === 1) {
             let resJson = {type: "resource", order: order[0]};
-            if(req.query['embed'] !== undefined && req.query['embed'] === "items"){
+            if (req.query['embed'] !== undefined && req.query['embed'] === "items") {
                 let items = await db('item').select().where({command_id: req.params.id});
                 items.map(item => {
                     delete item.command_id;
@@ -53,8 +62,8 @@ router.get('/:id', async (req, res, next) => {
                     resJson.order.items = items;
                 }
             }
-            resJson.links =  {
-                items : {
+            resJson.links = {
+                items: {
                     href: `/orders/${req.params.id}/items/`
                 },
                 self: {
@@ -77,7 +86,7 @@ router.get('/:id/items', async (req, res, next) => {
             delete item.command_id;
         })
         if (items) {
-            res.json({type: "collection",count: items.length, order: items});
+            res.json({type: "collection", count: items.length, order: items});
         } else {
             next();
         }
