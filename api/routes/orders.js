@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../ConnectionFactory');
+const commandeSchema = require('../validatorJoi/validatorOrders.js');
+const  updateOrderSchema  = require('../validatorJoi/validatorOrders.js');
 const uuid = require('uuid');
 /**
  * Get all orders
@@ -19,26 +21,19 @@ router.get('/', async (req, res, next) => {
 })
 
 
-/**
- * Change an order by id, only the "livraison", "nom", "mail" and "updated_at" can be changed
- */
 router.put('/:id', async (req, res, next) => {
-    ///!\ ajouter bibiliotheque JOI pour valider les requetes
-
     try {
-        let params = {"livraison" : req.query.livraison, "nom": req.query.nom, "mail": req.query.mail, updated_at: new Date().toDateInputValue()};
-        let order = await db('commande').where({id: req.params.id}).update(params);
-        if (order>0) {
-            res.status(204).json({});
+        const { error } = updateOrderSchema.validate(req.query);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
         }
-        else{
-            next();
-        }
-    }
-    catch (err) {
+
+        // your code to update order
+    } catch (err) {
         next(err);
     }
 });
+
 
 
 /**
@@ -98,16 +93,23 @@ router.get('/:id/items', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        let params = {"client_name" : req.query.client_name, "client_mail": req.query.client_mail, "delivery_date": { "date" : req.query.delivery.date, "time" : req.query.delivery.time}, "id": uuid.v4(), "total_amount": req.query.total_amount};
+        const {error } = commandeSchema.validate(req.query);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+        let params = {
+            "id": uuid.v4(),
+            "nom" : req.query.client_name,
+            "mail": req.query.client_mail,
+            "livraison": new Date().toDateInputValue(),
+            "created_at": new Date().toDateInputValue(),
+        };
+
         let order = await db('commande').insert(params);
-        if (order>0) {
-            res.status(204).json({});
-        }
-        else{
-            next();
-        }
-    }
-    catch (err) {
+
+        res.status(204).json({});
+
+    } catch (err) {
         next(err);
     }
 })
