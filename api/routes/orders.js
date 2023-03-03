@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../ConnectionFactory');
-
+const uuid = require('uuid');
 /**
  * Get all orders
  */
@@ -98,7 +98,7 @@ router.get('/:id/items', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        let params = {"client_name" : req.query.client_name, "client_mail": req.query.client_mail, "delivery_date": { "date" : req.query.delivery.date, "time" : req.query.delivery.time}, "id": req.query.id, "total_amount": req.query.total_amount};
+        let params = {"client_name" : req.query.client_name, "client_mail": req.query.client_mail, "delivery_date": { "date" : req.query.delivery.date, "time" : req.query.delivery.time}, "id": uuid.v4(), "total_amount": req.query.total_amount};
         let order = await db('commande').insert(params);
         if (order>0) {
             res.status(204).json({});
