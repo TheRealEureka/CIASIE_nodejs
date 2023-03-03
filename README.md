@@ -16,7 +16,7 @@ docker compose up -d
 ```
 4. Execution des commandes au sein du conteneur
 ```bash
-docker compose exec api <commande>
+docker compose exec <CONTENEUR> <commande>
 ```
 
 
