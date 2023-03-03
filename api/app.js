@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const orderRouter = require('./routes/orders');
@@ -15,7 +14,6 @@ Date.prototype.toDateInputValue = (function() {
     return local.toJSON().slice(0,10);
 });
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
