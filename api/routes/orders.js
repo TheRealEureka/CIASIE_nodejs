@@ -2,20 +2,20 @@ const express = require('express');
 const router = express.Router();
 const db = require('../ConnectionFactory');
 const commandeSchema = require('../validatorJoi/validatorOrders.js');
-const  updateOrderSchema  = require('../validatorJoi/validatorOrders.js');
+const updateOrderSchema = require('../validatorJoi/validatorOrders.js');
 const uuid = require('uuid');
 /**
  * Get all orders
  */
 router.get('/', async (req, res, next) => {
-    try{
+    try {
         let orders = await db('commande');
         if (orders) {
             res.json({type: "collection", count: orders.length, orders: orders});
         } else {
             next();
         }
-    }catch(err){
+    } catch (err) {
         next(err)
     }
 })
@@ -23,9 +23,9 @@ router.get('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
     try {
-        const {error } = commandeSchema.validate(req.query);
+        const {error} = commandeSchema.validate(req.query);
         if (error) {
-            return res.status(400).json({ error: error.details[0].message });
+            return res.status(400).json({error: error.details[0].message});
         }
         let params = {
             "livraison": req.query.livraison,
@@ -43,7 +43,6 @@ router.put('/:id', async (req, res, next) => {
         next(err);
     }
 });
-
 
 
 /**
@@ -80,6 +79,10 @@ router.get('/:id', async (req, res, next) => {
     }
 })
 
+
+/**
+ * Get all items of an order
+ */
 router.get('/:id/items', async (req, res, next) => {
     try {
         let items = await db('item').select().where({command_id: req.params.id});
@@ -103,29 +106,62 @@ router.get('/:id/items', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        const {error } = commandeSchema.validate(req.query);
+        const {error} = commandeSchema.validate(req.query);
         if (error) {
-            return res.status(400).json({ error: error.details[0].message });
+            return res.status(400).json({error: error.details[0].message});
         }
         let params = {
             "id": uuid.v4(),
-            "nom" : req.query.client_name,
+            "nom": req.query.client_name,
             "mail": req.query.client_mail,
             "livraison": new Date().toDateInputValue(),
             "created_at": new Date().toDateInputValue(),
         };
 
         let order = await db('commande').insert(params);
-        if (order>0) {
+        if (order > 0) {
             res.status(204).json({});
-        }
-        else{
+        } else {
             next();
         }
-    }
-    catch (err) {
+    } catch (err) {
         next(err);
     }
 })
+
+
+router.post('/', async (req, res, next) => {
+    try {
+        const {error} = commandeSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: error.details[0].message});
+        }
+
+        let amount = 0;
+
+        let items = req.body.items;
+        if (items !== undefined) {
+            items.map(item => {
+                amount += item.price * item.q;
+            })
+        }
+
+        let params = {
+            "nom": req.body.client_name,
+            "mail": req.body.client_mail,
+            "livraison": new Date(req.body.delivery.date),
+            "id": uuid.v4(),
+            "montant": amount,
+            "created_at": new Date().toDateInputValue()
+        };
+
+        let order = await db('commande').insert(params);
+        res.json({type: "resource", order: order[0]});
+
+    } catch (err) {
+        next(err);
+    }
+})
+
 
 module.exports = router;

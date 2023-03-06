@@ -6,7 +6,7 @@ const commandeSchema = Joi.object({
     client_mail: Joi.string().email().max(256).required(),
 
 
-});
+}).unknown(true);
 
 
 
