@@ -218,7 +218,7 @@ router.post('/', async (req, res, next) => {
         let params = {
             "nom": req.body.client_name,
             "mail": req.body.client_mail,
-            "livraison": new Date(req.body.delivery.date),
+            "livraison": new Date(req.body.delivery.date+" "+req.body.delivery.time),
             "id": id,
             "montant": amount,
             "created_at": new Date().toDateInputValue()

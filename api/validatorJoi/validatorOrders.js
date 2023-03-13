@@ -3,7 +3,10 @@ const Joi = require('joi');
 const commandeSchema = Joi.object({
     client_name: Joi.string().max(128).required(),
     client_mail: Joi.string().email().max(256).required(),
-
+    delivery : Joi.object({
+        date: Joi.string().required(),
+        time: Joi.string().required(),
+    })
 
 }).unknown(true);
 
