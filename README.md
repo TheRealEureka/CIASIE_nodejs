@@ -14,11 +14,24 @@ docker compose run --rm <CONTENEUR> npm install
 ```bash
 docker compose up -d
 ```
-4. Execution des commandes au sein du conteneur
-```bash
-docker compose exec <CONTENEUR> <COMMANDE>
-```
 
+## En cas de problème
+1. Supprimer le conteneur
+```bash
+docker rm -f <CONTENEUR>
+```
+2. Supprimer les fichiers mysql
+```bash
+rm -rf ./db/data
+```
+3. Relancer le conteneur
+```bash
+docker compose up -d
+```
+3. Réinstaller les dépendances
+```bash
+docker compose run --rm <CONTENEUR> npm install
+```
 
 ## Membres du groupe
 
