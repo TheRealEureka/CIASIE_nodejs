@@ -20,7 +20,28 @@ router.get('/', async (req, res, next) => {
         next(err)
     }
 })
-
+/**
+ * Return all orders with items
+ */
+router.get('/all', async (req, res, next) => {
+    try{
+        let orders = await db('commande').select({'id': 'id', 'livraison': 'livraison', 'client_name': 'nom', 'mail': 'mail', 'order_date': 'created_at', 'delivery_date': 'remise', 'statut': 'status'});
+        if (orders) {
+           for(let i = 0; i < orders.length; i++){
+               orders[i].links = {
+                    self: {
+                        href: "/orders/" + orders[i].id
+                    }
+                };
+           }
+            res.json({type: "collection", count: orders.length, orders: orders});
+        } else {
+            next();
+        }
+    }catch (err) {
+        next(err)
+    }
+});
 
 router.put('/:id', async (req, res, next) => {
     try {
