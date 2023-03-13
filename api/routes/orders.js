@@ -10,12 +10,20 @@ const uuid = require('uuid');
  */
 router.get('/', async (req, res, next) => {
     try {
-        let orders = await db('commande');
-        if (orders) {
-            res.json({type: "collection", count: orders.length, orders: orders});
-        } else {
-            next();
-        }
+
+            let orders;
+            if(req.query['c']){
+                orders = await db('commande').where({mail:req.query['c']});
+            }
+            else{
+                orders = await db('commande');
+            }
+            if (orders) {
+                res.json({type: "collection", count: orders.length, orders: orders});
+            } else {
+                next();
+            }
+
     } catch (err) {
         next(err)
     }
@@ -165,19 +173,20 @@ router.post('/', async (req, res, next) => {
         let items = req.body.items;
         let id = uuid.v4();
         if (items !== undefined) {
-            items.map(item => {
+            items.map(async item => {
+                console.log('item')
                 const {erroritem} = itemSchema.validate(item);
-                if(!erroritem)
-                {
+                if (!erroritem) {
+                    console.log('inset item')
                     amount += item.price * item.q;
                     let data = {
-                        'uri' : item.uri,
-                        'libelle' : item.name,
-                        'tarif' : item.price,
-                        'quantite' : item.q,
-                        'command_id' : id
+                        'uri': item.uri,
+                        'libelle': item.name,
+                        'tarif': item.price,
+                        'quantite': item.q,
+                        'command_id': id
                     }
-                    db('item').insert(data);
+                    await db('item').insert(data);
                 }
             })
         }
@@ -191,8 +200,8 @@ router.post('/', async (req, res, next) => {
             "created_at": new Date().toDateInputValue()
         };
 
-        let order = await db('commande').insert(params);
-        res.json({type: "resource", order: order[0]});
+        await db('commande').insert(params);
+        res.json({type: "resource", order: params});
 
     } catch (err) {
         next(err);
