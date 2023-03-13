@@ -28,6 +28,30 @@ router.get('/', async (req, res, next) => {
         next(err)
     }
 })
+//http://localhost:3333/orders/tri?sort=amount tri par le plus gros montant
+//localhost:3333/orders/tri?sort=date  tri par la date la plus ancienne
+router.get('/tri', async (req, res, next) => {
+    try {
+        let orders;
+        if (req.query['c']) {
+            orders = await db('commande').where({mail: req.query['c']});
+        } else {
+            orders = await db('commande');
+        }
+        if (orders) {
+            if (req.query['sort'] === 'date') {
+                orders.sort((a, b) => new Date(b.date) - new Date(a.date)); // tri par date décroissante
+            } else if (req.query['sort'] === 'amount') {
+                orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
+            }
+            res.json({type: "collection", count: orders.length, orders: orders});
+        } else {
+            next();
+        }
+    } catch (err) {
+        next(err);
+    }
+});
 /**
  * Return all orders with items
  */
