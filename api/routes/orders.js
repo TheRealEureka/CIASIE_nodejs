@@ -27,14 +27,16 @@ router.get('/all', async (req, res, next) => {
     try{
         let orders = await db('commande').select({'id': 'id', 'livraison': 'livraison', 'client_name': 'nom', 'mail': 'mail', 'order_date': 'created_at', 'delivery_date': 'remise', 'statut': 'status'});
         if (orders) {
+            let ord = [];
            for(let i = 0; i < orders.length; i++){
-               orders[i].links = {
+               ord[i] ={order : orders[i]};
+               ord[i].links = {
                     self: {
                         href: "/orders/" + orders[i].id
                     }
                 };
            }
-            res.json({type: "collection", count: orders.length, orders: orders});
+            res.json({type: "collection", count: orders.length, orders: ord});
         } else {
             next();
         }
