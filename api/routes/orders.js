@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../ConnectionFactory');
 const commandeSchema = require('../validatorJoi/validatorOrders.js');
-const updateOrderSchema = require('../validatorJoi/validatorOrders.js');
+const itemSchema = require('../validatorJoi/validatorItem.js');
+//const updateOrderSchema = require('../validatorJoi/validatorOrders.js');
 const uuid = require('uuid');
 /**
  * Get all orders
@@ -138,11 +139,23 @@ router.post('/', async (req, res, next) => {
         }
 
         let amount = 0;
-
         let items = req.body.items;
+        let id = uuid.v4();
         if (items !== undefined) {
             items.map(item => {
-                amount += item.price * item.q;
+                const {erroritem} = itemSchema.validate(item);
+                if(!erroritem)
+                {
+                    amount += item.price * item.q;
+                    let data = {
+                        'uri' : item.uri,
+                        'libelle' : item.name,
+                        'tarif' : item.price,
+                        'quantite' : item.q,
+                        'command_id' : id
+                    }
+                    db('item').insert(data);
+                }
             })
         }
 
@@ -150,7 +163,7 @@ router.post('/', async (req, res, next) => {
             "nom": req.body.client_name,
             "mail": req.body.client_mail,
             "livraison": new Date(req.body.delivery.date),
-            "id": uuid.v4(),
+            "id": id,
             "montant": amount,
             "created_at": new Date().toDateInputValue()
         };
