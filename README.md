@@ -24,14 +24,15 @@ docker rm -f <CONTENEUR>
 ```bash
 rm -rf ./db/data
 ```
-3. Relancer le conteneur
-```bash
-docker compose up -d
-```
-4. Réinstaller les dépendances
+3. Réinstaller les dépendances
 ```bash
 docker compose run --rm api npm install
 ```
+4. Relancer le conteneur
+```bash
+docker compose up -d
+```
+
 
 ## Membres du groupe
 
