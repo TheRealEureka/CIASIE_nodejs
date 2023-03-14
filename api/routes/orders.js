@@ -8,6 +8,8 @@ const uuid = require('uuid');
 /**
  * Get all orders
  */
+//http://localhost:3333/orders/?sort=date
+//http://localhost:3333/orders/?sort=amount
 router.get('/', async (req, res, next) => {
     try {
         let orders;
