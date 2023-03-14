@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/', async (req, res, next) => {
     const {email, password} = req.body;
-    let usr = await db('clients').where({'mail_client': email});
+    let usr = await db('client').where({'mail_client': email});
     if (usr.length > 0) {
         bcrypt.compare(password, usr[0]['passwd'], async function (err, result) {
             if (result) {
@@ -45,7 +45,7 @@ router.post('/', async (req, res, next) => {
 router.post('/signup', async (req, res, next) => {
    //new user
     const {email, password, name} = req.body;
-    let usr = await db('clients').where({'mail_client': email});
+    let usr = await db('client').where({'mail_client': email});
     if (usr.length > 0) {
         res.status(409).json({
             "type": "error",
@@ -56,11 +56,11 @@ router.post('/signup', async (req, res, next) => {
     else {
         const salt = await bcrypt.genSalt(saltRounds);
         bcrypt.hash(password, salt, async function (err, hash) {
-            await db('clients').insert({
+            await db('client').insert({
                 'mail_client': email,
                 'passwd': hash,
                 'nom_client': name,
-                'created_at': 'now()'
+                'created_at': Date.now(),
             });
             res.json({message: 'user created'});
         });
