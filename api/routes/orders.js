@@ -48,13 +48,18 @@ router.get('/', async (req, res, next) => {
                         },
                         prev: {
                             href: "/orders?page=" + (parseInt(req.query['page']) - 1)
+                        },
+                        last:{
+                            href: "/orders?page=" + (parseInt(count[0]["count(*)"])/nbelem)
+                        },
+                        first:{
+                            href: "/orders?page=1"
                         }
                     }
                 }
                 else
                 {
                     resObj.orders= orders;
-
                 }
                 res.json(resObj);
             } else {
