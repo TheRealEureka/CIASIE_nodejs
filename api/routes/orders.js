@@ -10,7 +10,6 @@ const uuid = require('uuid');
  */
 router.get('/', async (req, res, next) => {
     try {
-
             let orders;
             if(req.query['c']){
                 orders = await db('commande').where({mail:req.query['c']});
