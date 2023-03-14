@@ -1,5 +1,5 @@
-api/node_modules
-api/package-lock.json
+api-auth/node_modules
+api-auth/package-lock.json
 db/data
 .env
 .idea/

@@ -12,7 +12,7 @@ services:
     ports:
       - "3333:3000"
     volumes:
-      - ./api:/usr/src/app
+      - ./api-auth:/usr/src/app
     networks:
       - api_network
     depends_on:
