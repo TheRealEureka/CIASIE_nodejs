@@ -37,8 +37,11 @@ router.get('/', async (req, res, next) => {
                 } else if (req.query['sort'] === 'amount') {
                     orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
                 }
-                let resObj = {type: "collection", count: count[0]["count(*)"], orders: orders};
+                let resObj = {type: "collection", count: count[0]["count(*)"]};
                 if (req.query['page']) {
+                    resObj.size = orders.length;
+
+                    resObj.orders= orders;
                     resObj.links = {
                         next: {
                             href: "/orders?page=" + (parseInt(req.query['page']) + 1)
@@ -47,7 +50,11 @@ router.get('/', async (req, res, next) => {
                             href: "/orders?page=" + (parseInt(req.query['page']) - 1)
                         }
                     }
-                    resObj.size = orders.length;
+                }
+                else
+                {
+                    resObj.orders= orders;
+
                 }
                 res.json(resObj);
             } else {
