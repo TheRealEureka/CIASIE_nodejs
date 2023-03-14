@@ -8,7 +8,7 @@ cp .env.sample .env
 ```
 2. Installation des dépendances
 ```bash
-docker compose run --rm <CONTENEUR> npm install
+docker compose run --rm api npm install
 ```
 3. Lancement du conteneur
 ```bash
@@ -30,7 +30,7 @@ docker compose up -d
 ```
 4. Réinstaller les dépendances
 ```bash
-docker compose run --rm <CONTENEUR> npm install
+docker compose run --rm api npm install
 ```
 
 ## Membres du groupe
