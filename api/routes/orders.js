@@ -10,33 +10,41 @@ const uuid = require('uuid');
  */
 router.get('/', async (req, res, next) => {
     try {
-            let orders;
-            if(req.query['c']){
-                orders = await db('commande').where({mail:req.query['c']});
-            }
-            else{
-                orders = await db('commande');
-            }
-            if (orders) {
-                if (req.query['sort'] === 'date') {
-                    orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // tri par date décroissante
-                } else if (req.query['sort'] === 'amount') {
-                    orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
-                } else if (req.query['page'] !== null && req.query['page'] !== undefined) {
-
-
-
-
-                    /**let page = parseInt(req.query['page']);
-                    let start = (page - 1) * 10;
-                    let end = page * 10;
-                    orders = orders.slice(start, end);*/
-                }
-
-                res.json({type: "collection", count: orders.length, orders: orders});
-            } else {
-                next();
-            }
+        let orders;
+        orders = db('commande');
+        let count = await db('commande').count();
+        let nbelem = 10;
+        if(req.query['c']){
+                orders.where({mail:req.query['c']});
+        }
+        if(req.query['page']){
+            //faire les vérifications de page (>0 et isNumber)
+            orders.limit(nbelem).offset((req.query['page']-1)*nbelem);
+        }
+             orders.then(async (orders) => {
+                 if (orders) {
+                     if (req.query['sort'] === 'date') {
+                         orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // tri par date décroissante
+                     } else if (req.query['sort'] === 'amount') {
+                         orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
+                     }
+                     let resObj = {type: "collection", count: count[0]["count(*)"], orders: orders};
+                     if (req.query['page']) {
+                         resObj.links = {
+                             next: {
+                                 href: "/orders?page=" + (parseInt(req.query['page']) + 1)
+                             },
+                             prev: {
+                                 href: "/orders?page=" + (parseInt(req.query['page']) - 1)
+                             }
+                         }
+                         resObj.size = orders.length;
+                     }
+                     res.json(resObj);
+                 } else {
+                     next();
+                 }
+             });
 
     } catch (err) {
         next(err)
