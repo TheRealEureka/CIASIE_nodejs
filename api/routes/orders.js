@@ -14,37 +14,46 @@ router.get('/', async (req, res, next) => {
         orders = db('commande');
         let count = await db('commande').count();
         let nbelem = 10;
-        if(req.query['c']){
-                orders.where({mail:req.query['c']});
+        if (req.query['c']) {
+            orders.where({mail: req.query['c']});
         }
-        if(req.query['page']){
-            //faire les vérifications de page (>0 et isNumber)
-            orders.limit(nbelem).offset((req.query['page']-1)*nbelem);
+        if (req.query['page']) {
+            //verif que page est un nombre
+            if (isNaN(req.query['page'])) {
+                req.query['page'] = 1;
+            }
+
+            //verif que page est positif
+            if (req.query['page'] <= 0) {
+                req.query['page'] = 1;
+            }
+
+            orders.limit(nbelem).offset((req.query['page'] - 1) * nbelem);
         }
-             orders.then(async (orders) => {
-                 if (orders) {
-                     if (req.query['sort'] === 'date') {
-                         orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // tri par date décroissante
-                     } else if (req.query['sort'] === 'amount') {
-                         orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
-                     }
-                     let resObj = {type: "collection", count: count[0]["count(*)"], orders: orders};
-                     if (req.query['page']) {
-                         resObj.links = {
-                             next: {
-                                 href: "/orders?page=" + (parseInt(req.query['page']) + 1)
-                             },
-                             prev: {
-                                 href: "/orders?page=" + (parseInt(req.query['page']) - 1)
-                             }
-                         }
-                         resObj.size = orders.length;
-                     }
-                     res.json(resObj);
-                 } else {
-                     next();
-                 }
-             });
+        orders.then(async (orders) => {
+            if (orders) {
+                if (req.query['sort'] === 'date') {
+                    orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // tri par date décroissante
+                } else if (req.query['sort'] === 'amount') {
+                    orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
+                }
+                let resObj = {type: "collection", count: count[0]["count(*)"], orders: orders};
+                if (req.query['page']) {
+                    resObj.links = {
+                        next: {
+                            href: "/orders?page=" + (parseInt(req.query['page']) + 1)
+                        },
+                        prev: {
+                            href: "/orders?page=" + (parseInt(req.query['page']) - 1)
+                        }
+                    }
+                    resObj.size = orders.length;
+                }
+                res.json(resObj);
+            } else {
+                next();
+            }
+        });
 
     } catch (err) {
         next(err)
@@ -54,23 +63,31 @@ router.get('/', async (req, res, next) => {
  * Return all orders with items
  */
 router.get('/all', async (req, res, next) => {
-    try{
-        let orders = await db('commande').select({'id': 'id', 'livraison': 'livraison', 'client_name': 'nom', 'mail': 'mail', 'order_date': 'created_at', 'delivery_date': 'remise', 'statut': 'status'});
+    try {
+        let orders = await db('commande').select({
+            'id': 'id',
+            'livraison': 'livraison',
+            'client_name': 'nom',
+            'mail': 'mail',
+            'order_date': 'created_at',
+            'delivery_date': 'remise',
+            'statut': 'status'
+        });
         if (orders) {
             let ord = [];
-           for(let i = 0; i < orders.length; i++){
-               ord[i] ={order : orders[i]};
-               ord[i].links = {
+            for (let i = 0; i < orders.length; i++) {
+                ord[i] = {order: orders[i]};
+                ord[i].links = {
                     self: {
                         href: "/orders/" + orders[i].id
                     }
                 };
-           }
+            }
             res.json({type: "collection", count: orders.length, orders: ord});
         } else {
             next();
         }
-    }catch (err) {
+    } catch (err) {
         next(err)
     }
 });
@@ -216,7 +233,7 @@ router.post('/', async (req, res, next) => {
         let params = {
             "nom": req.body.client_name,
             "mail": req.body.client_mail,
-            "livraison": new Date(req.body.delivery.date+" "+req.body.delivery.time),
+            "livraison": new Date(req.body.delivery.date + " " + req.body.delivery.time),
             "id": id,
             "montant": amount,
             "created_at": new Date().toDateInputValue()
