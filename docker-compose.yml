@@ -1,9 +1,10 @@
 version: '3.0'
-
+name : "api"
 services:
+
   api:
     image: node:alpine
-    container_name: api-nodejs
+    container_name: api-nodejs-auth
     command: "npm run watch"
     working_dir: /usr/src/app
     env_file:

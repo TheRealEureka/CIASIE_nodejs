@@ -3,9 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const indexRouter = require('./routes/index');
-const orderRouter = require('./routes/orders');
-const usersRouter = require('./routes/users');
-const sandwichsRouter = require('./routes/sandwichs');
+
 
 const app = express();
 
@@ -19,9 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 app.use('/', indexRouter);
-app.use('/orders', orderRouter);
-app.use('/users', usersRouter);
-app.use('/sandwichs', sandwichsRouter);
+
 
 app.use((req, res, next) => {
 
