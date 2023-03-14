@@ -23,7 +23,17 @@ router.get('/', async (req, res, next) => {
                     orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // tri par date décroissante
                 } else if (req.query['sort'] === 'amount') {
                     orders.sort((a, b) => b.montant - a.montant); // tri par montant total décroissant
+                } else if (req.query['page'] !== null && req.query['page'] !== undefined) {
+
+
+
+
+                    /**let page = parseInt(req.query['page']);
+                    let start = (page - 1) * 10;
+                    let end = page * 10;
+                    orders = orders.slice(start, end);*/
                 }
+
                 res.json({type: "collection", count: orders.length, orders: orders});
             } else {
                 next();
