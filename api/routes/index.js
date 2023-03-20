@@ -80,8 +80,9 @@ router.post('/', async (req, res, next) => {
 
 router.post('/validate', async (req, res, next) => {
    try {
-       if(req.body["Authorization"] !== undefined){
+       if(req.body["Authorization"] !== undefined && req.body["Authorization"].split(" ")[0] === "Bearer"){
        let token = req.body["Authorization"].split(" ")[1];
+
        let sign = {
            issuer:  "auth",
            subject:  "user",
