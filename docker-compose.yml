@@ -1,20 +1,12 @@
-version: '3'
+version: '3.0'
 
 services:
-  api-gateway:
-    build: .
+  api:
+    image: node:alpine
+    container_name: gateway-nodejs
+    command: "npm run watch"
+    working_dir: /usr/src/app
     ports:
-      - "3000:3000"
-    depends_on:
-      - service1
-      - service2
-
-  service1:
-    image: service1
-    ports:
-      - "3000:3000"
-
-  service2:
-    image: service2
-    ports:
-      - "3000:3000"
+      - "3333:3000"
+    volumes:
+      - ./api:/usr/src/app
