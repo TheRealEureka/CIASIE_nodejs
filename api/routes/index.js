@@ -198,6 +198,7 @@ router.post('/signup', async (req, res, next) => {
     }
 });
 
+
 async function verifyToken(token) {
 
     let cert = await fs.readFileSync('./public.key');

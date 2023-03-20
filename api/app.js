@@ -14,13 +14,16 @@ Date.prototype.toDateInputValue = (function () {
 });
 
 app.use(express.json());
+
 app.use(express.urlencoded({extended: false}));
 
 app.use('/', indexRouter);
 
+const error_handler = async (err, req, res, next) => {
 
-app.use((req, res, next) => {
+    return res.status(err).location(req.path).json(err);
 
-    res.json({error: 'not found'});
-})
+};
+app.use(error_handler);
+
 module.exports = app;
