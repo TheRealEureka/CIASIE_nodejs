@@ -15,8 +15,7 @@
     "jsonwebtoken": "^9.0.0",
     "knex": "^2.4.2",
     "mysql": "^2.18.1",
-    "rand-token": "^1.0.1",
-    "uuid": "^9"
+    "rand-token": "^1.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0"
