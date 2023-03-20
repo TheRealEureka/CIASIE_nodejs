@@ -32,6 +32,25 @@ docker compose run --rm <CONTAINER> npm install
 ```bash
 docker compose up -d
 ```
+## Endpoints
+### POST /token
+Body : 
+    * email : string
+    * password : string
+### POST /signup
+Body :
+* email : string
+* password : string
+* name : string
+### POST /refresh
+Header : 
+* Authorization : Bearer <token>
+
+Body :
+* refresh_token : string
+
+### POST /validate
+* Authorization : Bearer <token>
 
 
 ## Membres du groupe

@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
   res.json({ title: 'Express', comment: 'Welcome to express' });
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/token', async (req, res, next) => {
     try {
         if(req.body.email !== undefined && req.body.password !== undefined){
         const {email, password} = req.body;
