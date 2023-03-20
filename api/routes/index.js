@@ -11,7 +11,7 @@ const saltRounds = 10;
 const sign = {
     issuer:  "auth",
     subject:  "user",
-    audience:  "http://localhost:3000",
+    audience:  "http://localhost:3333",
     expiresIn:  "1h",
     algorithm:  "RS256"
 }
