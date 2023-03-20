@@ -9,3 +9,11 @@ CREATE TABLE `client` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `tokens_data`;
+CREATE TABLE `tokens_data` (
+    `client_id` INT(11) NOT NULL,
+    `token` TEXT NOT NULL,
+    `refresh_token` TEXT NOT NULL,
+    PRIMARY KEY (`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

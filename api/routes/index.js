@@ -4,13 +4,18 @@ const db = require('../ConnectionFactory');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const { uid, suid } = require('rand-token');
+const { suid } = require('rand-token');
 
 const saltRounds = 10;
 
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
+const sign = {
+    issuer:  "auth",
+    subject:  "user",
+    audience:  "http://localhost:3000",
+    expiresIn:  "1h",
+    algorithm:  "RS256"
+}
+router.get('/', function(req, res) {
   res.json({ title: 'Express', comment: 'Welcome to express' });
 });
 
@@ -29,20 +34,20 @@ router.post('/', async (req, res, next) => {
                         level: "aled"
                     }
 
-                    let sign = {
-                        issuer:  "auth",
-                        subject:  "user",
-                        audience:  "http://localhost:3000",
-                        expiresIn:  "1h",
-                        algorithm:  "RS256"
-                    }
                    let cert = await fs.readFileSync('./private.key');
-                    jwt.sign(payload, cert, sign, function(err, token) {
+                    jwt.sign(payload, cert, sign, async function(err, token) {
                         if(err){
                             next(err);
                         }
                         else{
-                        res.json({"access-token": token, "refresh-token": suid(16)});
+                            let refresh = suid(16);
+                            await db('tokens_data').where({'client_id': usr[0]['id']}).del();
+                            await db('tokens_data').insert({
+                                'token': token,
+                                'refresh_token': refresh,
+                                'client_id': usr[0]['id']
+                            });
+                            res.json({"access-token": token, "refresh-token": refresh});
                         }
                     });
                 } else {
@@ -80,33 +85,22 @@ router.post('/', async (req, res, next) => {
 
 router.post('/validate', async (req, res, next) => {
    try {
-       if(req.body["Authorization"] !== undefined && req.body["Authorization"].split(" ")[0] === "Bearer"){
-       let token = req.body["Authorization"].split(" ")[1];
+       if(req.headers.authorization !== undefined && req.headers.authorization.split(" ")[0] === "Bearer"){
+       let token = req.headers.authorization.split(" ")[1];
+        let verif = await verifyToken(token);
+        if(verif){
+            delete verif.iat;
+            delete verif.exp;
+            res.json(verif);
+        }else {
+            res.status(401).json({
+                    "type": "error",
+                    "error": 401,
+                    "message": "Token not valid"
+                }
+            );
+        }
 
-       let sign = {
-           issuer:  "auth",
-           subject:  "user",
-           audience:  "http://localhost:3000",
-           expiresIn:  "1h",
-           algorithm:  "RS256"
-       }
-         let cert = await fs.readFileSync('./public.key');
-         jwt.verify(token, cert, sign, function(err, decoded) {
-                if(err){
-             console.log(err);
-                    res.status(401).json({
-                            "type": "error",
-                            "error": 401,
-                            "message": "Token not valid"
-                        }
-                    );
-                }
-                else{
-                    delete decoded.iat;
-                    delete decoded.exp;
-                    res.json(decoded);
-                }
-         });
          }else{
            res.status(401).json({
                    "type": "error",
@@ -122,7 +116,42 @@ router.post('/validate', async (req, res, next) => {
 
 router.post('/refresh', async (req, res, next) => {
    try{
+       if(req.headers.authorization !== undefined && req.body["refresh-token"] !== undefined && req.headers.authorization.split(" ")[0] === "Bearer"){
+           let verif = await verifyToken(req.headers.authorization.split(" ")[1]);
+              if(verif){
+                  let refresh = await db('tokens_data').where({'refresh_token': req.body["refresh-token"]});
+                    if(refresh.length > 0){
+                        let payload = {
+                            email: verif.email,
+                            name: verif.name,
+                            level: verif.level
+                        }
 
+                        let cert = await fs.readFileSync('./private.key');
+                        jwt.sign(payload, cert, sign, async function(err, token) {
+                            if(err){
+                               res.status(401).json({
+                                        "type": "error",
+                                        "error": 401,
+                                        "message": "Token not valid"
+                               });
+                            }
+                            else{
+                                let refresh = suid(16);
+                                await db('tokens_data').update({"token": token, "refresh_token": refresh}).where({'refresh_token': req.body["refresh-token"]} );
+                                res.json({"access-token": token, "refresh-token": refresh});
+                            }
+                        });
+                    }
+              }else{
+                    res.status(401).json({
+                            "type": "error",
+                            "error": 401,
+                            "message": "Token not valid"
+                        }
+                    );
+              }
+       }
    } catch (e) {
        next(e)
    }
@@ -168,5 +197,25 @@ router.post('/signup', async (req, res, next) => {
         next(e)
     }
 });
+
+async function verifyToken(token) {
+
+    let cert = await fs.readFileSync('./public.key');
+    let verify;
+    try {
+      verify = await jwt.verify(token, cert, sign);
+    }catch (e) {
+         verify = false;
+    }
+    if(!verify){
+        await db('tokens_data').where({'token': token}).del();
+        return false;
+    }
+    let dbToken = await db('tokens_data').where({'token': token});
+    if(dbToken.length === 0){
+        return false;
+    }
+    return verify;
+}
 
 module.exports = router;

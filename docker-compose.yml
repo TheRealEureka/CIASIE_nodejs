@@ -30,6 +30,19 @@ services:
       - ./db/sql:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
     networks:
       - api_network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    env_file:
+      - .env
+    ports:
+      - "8080:80"
+    networks:
+      - api_network
+    depends_on:
+      - db
+    links:
+      - db
 networks:
   api_network:
     driver: bridge
