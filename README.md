@@ -26,7 +26,7 @@ rm -rf ./db/data
 ```
 3. Réinstaller les dépendances
 ```bash
-docker compose run --rm api npm install
+docker compose run --rm <CONTAINER> npm install
 ```
 4. Relancer le conteneur
 ```bash
