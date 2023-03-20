@@ -44,3 +44,4 @@ services:
 networks:
   api_network:
     driver: bridge
+
