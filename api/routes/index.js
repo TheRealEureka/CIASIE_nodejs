@@ -26,7 +26,7 @@ router.post('/', async (req, res, next) => {
                     let payload = {
                         email: usr[0]['mail_client'],
                         name: usr[0]['nom_client'],
-                        level: "zizi"
+                        level: "aled"
                     }
 
                     let sign = {
@@ -102,6 +102,8 @@ router.post('/validate', async (req, res, next) => {
                     );
                 }
                 else{
+                    delete decoded.iat;
+                    delete decoded.exp;
                     res.json(decoded);
                 }
          });
@@ -118,6 +120,13 @@ router.post('/validate', async (req, res, next) => {
     }
 });
 
+router.post('/refresh', async (req, res, next) => {
+   try{
+
+   } catch (e) {
+       next(e)
+   }
+});
 router.post('/signup', async (req, res, next) => {
    //new user
     try {
