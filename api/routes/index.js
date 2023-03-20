@@ -15,9 +15,6 @@ const sign = {
     expiresIn:  "1h",
     algorithm:  "RS256"
 }
-router.get('/', function(req, res) {
-  res.json({ title: 'Express', comment: 'Welcome to express' });
-});
 
 router.post('/token', async (req, res, next) => {
     try {
@@ -60,7 +57,6 @@ router.post('/token', async (req, res, next) => {
                 }
 
             });
-
         }else{
             //user not found
             res.status(401).json({
