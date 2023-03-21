@@ -16,6 +16,6 @@ const updateOrderSchema = Joi.object({
     mail: Joi.string().email().required(),
 }).unknown(false);
 
-module.exports = { updateOrderSchema };
+//module.exports = { updateOrderSchema };
 
 module.exports = {commandeSchema, updateOrderSchema};

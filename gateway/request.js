@@ -1,11 +1,17 @@
 
-async function send(url, method = 'GET', body = {}, headers = {}) {
-    headers['Content-Type'] = 'application/json';
+async function send(url, method = 'GET', body = {}, token = null) {
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+    if(token !== null) headers.authorization = token;
+
     let options = {
         method: method,
-        body: body,
-        headers: headers,
+        body: JSON.stringify(body),
+        headers: headers
     }
+    console.log(url)
+    console.log(options);
     if(method === 'GET') delete(options.body);
     try {
         return await fetch(url, options).then(response => {

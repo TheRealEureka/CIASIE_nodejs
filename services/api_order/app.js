@@ -4,7 +4,6 @@ const helmet = require('helmet');
 
 const indexRouter = require('./routes/index');
 const orderRouter = require('./routes/orders');
-const usersRouter = require('./routes/users');
 const sandwichsRouter = require('./routes/sandwichs');
 
 const app = express();
@@ -24,7 +23,6 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 app.use('/orders', orderRouter);
-app.use('/users', usersRouter);
 app.use('/sandwichs', sandwichsRouter);
 
 // Route pour les erreurs 404

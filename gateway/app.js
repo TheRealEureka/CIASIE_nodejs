@@ -3,6 +3,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const orderRouter = require('./routes/orders');
 
 
 const app = express();
@@ -20,6 +22,8 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.use('/', indexRouter);
+app.use('/', authRouter);
+app.use('/', orderRouter);
 
 
 // Route pour les erreurs 404

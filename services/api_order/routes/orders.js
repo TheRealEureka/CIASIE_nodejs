@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../ConnectionFactory');
-const commandeSchema = require('../validatorJoi/validatorOrders.js');
+const {commandeSchema} = require('../validatorJoi/validatorOrders.js');
 const itemSchema = require('../validatorJoi/validatorItem.js');
 //const updateOrderSchema = require('../validatorJoi/validatorOrders.js');
 const uuid = require('uuid');
@@ -106,29 +106,6 @@ router.get('/all', async (req, res, next) => {
     }
 });
 
-router.put('/:id', async (req, res, next) => {
-    try {
-        const {error} = commandeSchema.validate(req.query);
-        if (error) {
-            return res.status(400).json({error: error.details[0].message});
-        }
-        let params = {
-            "livraison": req.query.livraison,
-            "nom": req.query.nom,
-            "mail": req.query.mail,
-            updated_at: new Date().toDateInputValue()
-        };
-        let order = await db('commande').where({id: req.params.id}).update(params);
-        if (order > 0) {
-            res.status(204).json({});
-        } else {
-            next();
-        }
-    } catch (err) {
-        next(err);
-    }
-});
-
 
 /**
  * Get an order by his id
@@ -184,26 +161,19 @@ router.get('/:id/items', async (req, res, next) => {
     }
 })
 
-
-/**
- * Create a new order
- */
-
-router.put('/', async (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
     try {
         const {error} = commandeSchema.validate(req.query);
         if (error) {
             return res.status(400).json({error: error.details[0].message});
         }
         let params = {
-            "id": uuid.v4(),
-            "nom": req.query.client_name,
-            "mail": req.query.client_mail,
-            "livraison": new Date().toDateInputValue(),
-            "created_at": new Date().toDateInputValue(),
+            "livraison": req.query.livraison,
+            "nom": req.query.nom,
+            "mail": req.query.mail,
+            updated_at: new Date().toDateInputValue()
         };
-
-        let order = await db('commande').insert(params);
+        let order = await db('commande').where({id: req.params.id}).update(params);
         if (order > 0) {
             res.status(204).json({});
         } else {
@@ -212,7 +182,13 @@ router.put('/', async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-})
+});
+
+
+
+/**
+ * Create a new order
+ */
 
 
 router.post('/', async (req, res, next) => {
