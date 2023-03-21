@@ -25,6 +25,21 @@ router.get('/', async function (req, res, next) {
 
 });
 
+router.post('/', async function (req, res, next) {
+    if(req.headers.authorization !== undefined){
+        let authentification = await checkAuthentification(req.headers.authorization);
+        if(!authentification){
+            res.status(401).json({error: "Unauthorized"});
+            return;
+        }
+
+        res.json(await request.send( commande + 'orders', 'POST', req.body));
+
+    }else{
+        res.status(401).json({error: "Unauthorized"});
+    }
+});
+
 router.get('/:id', async function (req, res, next) {
     if(req.headers.authorization !== undefined && req.params.id !== undefined){
         let authentification = await checkAuthentification(req.headers.authorization);
@@ -50,7 +65,21 @@ router.get('/:id/items', async function (req, res, next) {
             return;
         }
 
-        res.json(await request.send(url, 'GET'));
+        res.json(await request.send(commande+'/orders'+req.params.id+'/items', 'GET'));
+    }
+    else{
+        res.status(401).json({error: "Unauthorized"});
+    }
+});
+
+router.patch('/:id', async function (req, res, next) {
+    if(req.headers.authorization !== undefined && req.params.id !== undefined){
+        let authentification = await checkAuthentification(req.headers.authorization);
+        if(!authentification){
+            res.status(401).json({error: "Unauthorized"});
+            return;
+        }
+        res.json(await request.send(commande+'/'+req.params.id, 'PATCH', req.body));
     }
     else{
         res.status(401).json({error: "Unauthorized"});
