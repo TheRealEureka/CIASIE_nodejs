@@ -82,7 +82,7 @@ router.post('/token', async (req, res, next) => {
     }
 });
 
-router.post('/validate', async (req, res, next) => {
+router.get('/validate', async (req, res, next) => {
    try {
        if(req.headers.authorization !== undefined && req.headers.authorization.split(" ")[0] === "Bearer"){
        let token = req.headers.authorization.split(" ")[1];

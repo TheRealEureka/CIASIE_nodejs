@@ -8,8 +8,8 @@ router.post('/signup', async function (req, res, next) {
     res.json(await request.send(auth + 'signup', 'POST', req.body));
 });
 
-router.post('/validate', async function (req, res, next) {
-    res.json(await request.send(auth + 'validate', 'POST', req.body, req.headers.authorization));
+router.get('/validate', async function (req, res, next) {
+    res.json(await request.send(auth + 'validate', 'GET', req.body, req.headers.authorization));
 });
 router.post('/token', async function (req, res, next) {
     res.json(await request.send(auth + 'token', 'POST', req.body));
