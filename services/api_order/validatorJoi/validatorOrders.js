@@ -18,4 +18,4 @@ const updateOrderSchema = Joi.object({
 
 module.exports = { updateOrderSchema };
 
-module.exports = commandeSchema, updateOrderSchema;
+module.exports = {commandeSchema, updateOrderSchema};
