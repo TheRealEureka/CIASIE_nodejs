@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
-app.use('/', orderRouter);
+app.use('/orders', orderRouter);
 
 
 // Route pour les erreurs 404

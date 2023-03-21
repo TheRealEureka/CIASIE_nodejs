@@ -6,7 +6,7 @@ const auth = "http://api_auth:3000/";
 
 
 /* GET home page. */
-router.get('/orders', async function (req, res, next) {
+router.get('/', async function (req, res, next) {
 
     if(req.headers.authorization !== undefined){
         let authentification = await checkAuthentification(req.headers.authorization);
@@ -25,7 +25,7 @@ router.get('/orders', async function (req, res, next) {
 
 });
 
-router.get('/orders/:id', async function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
     if(req.headers.authorization !== undefined && req.params.id !== undefined){
         let authentification = await checkAuthentification(req.headers.authorization);
         if(!authentification){
@@ -42,7 +42,7 @@ router.get('/orders/:id', async function (req, res, next) {
     }
 });
 
-router.get('/orders/:id/items', async function (req, res, next) {
+router.get('/:id/items', async function (req, res, next) {
     if(req.headers.authorization !== undefined && req.params.id !== undefined){
         let authentification = await checkAuthentification(req.headers.authorization);
         if(!authentification){
