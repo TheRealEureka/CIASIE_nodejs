@@ -10,8 +10,7 @@ async function send(url, method = 'GET', body = {}, token = null) {
         body: JSON.stringify(body),
         headers: headers
     }
-    console.log(url)
-    console.log(options);
+
     if(method === 'GET') delete(options.body);
     try {
         return await fetch(url, options).then(response => {
