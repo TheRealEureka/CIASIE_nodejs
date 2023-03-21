@@ -38,7 +38,14 @@ docker compose run --rm api_order npm install
 docker compose run --rm api_auth npm install
 docker compose run --rm gateway npm install
 ```
-4. Relancer le conteneur
+4. Créer les clés RSA
+
+   * Aller sur https://travistidwell.com/jsencrypt/demo/
+   * Générer une clé RSA de 2048 bits
+   * Copier la clé privée dans le fichier ./services/api_auth/private.key
+   * Copier la clé publique dans le fichier ./services/api_auth/public.key
+
+5. Relancer le conteneur
 ```bash
 docker compose up -d
 ```
