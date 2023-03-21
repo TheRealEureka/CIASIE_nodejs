@@ -1,5 +1,9 @@
-api_order/node_modules
-api_order/package-lock.json
-db_order/data
+services/api_order/node_modules
+services/api_order/package-lock.json
+services/api_auth/node_modules
+services/api_auth/package-lock.json
+dbs/db_order/data
+dbs/db_auth/data
 .env
 .idea/
+*.key

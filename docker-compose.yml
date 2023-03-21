@@ -11,37 +11,56 @@ services:
     ports:
       - "3333:3000"
     volumes:
-      - ./api_order:/usr/src/app
+      - ./services/api_order:/usr/src/app
     networks:
       - api_network
     depends_on:
-      - db_api
+      - db_order
     links:
-      - db_api
+      - db_order
 
-  db_api:
+  db_order:
     image: mariadb:latest
     env_file:
       - .env
     ports:
       - "3306:3306"
     volumes:
-      - ./db/data_order:/var/lib/mysql #synchronise le répertoire local ./db/data avec le répertoire du container /var/lib/mysql
-      - ./db/sql_order:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
+      - ./dbs/db_order/data:/var/lib/mysql #synchronise le répertoire local ./db/data avec le répertoire du container /var/lib/mysql
+      - ./dbs/db_order/sql:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
     networks:
       - api_network
-  phpmyadmin:
-    image:  phpmyadmin/phpmyadmin:latest
-    restart: on-failure
-    ports:
-      - "8081:80"
-    environment:
+  api_auth:
+    image: node:alpine
+    container_name: api-nodejs-auth
+    command: "npm run watch"
+    working_dir: /usr/src/app
+    env_file:
       - .env
-    depends_on:
-      - db_api
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./services/api_auth:/usr/src/app
     networks:
-      - api_network
+      - api_auth_network
+    depends_on:
+      - db_auth
+    links:
+      - db_auth
+  db_auth:
+      image: mariadb:latest
+      env_file:
+        - .env
+      ports:
+        - "3307:3306"
+      volumes:
+        - ./dbs/db_auth/data:/var/lib/mysql #synchronise le répertoire local ./db/data avec le répertoire du container /var/lib/mysql
+        - ./dbs/db_auth/sql:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
+      networks:
+        - api_auth_network
 networks:
   api_network:
+    driver: bridge
+  api_auth_network:
     driver: bridge
 
