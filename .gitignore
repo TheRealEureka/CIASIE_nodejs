@@ -2,6 +2,8 @@ services/api_order/node_modules
 services/api_order/package-lock.json
 services/api_auth/node_modules
 services/api_auth/package-lock.json
+gateway/node_modules
+gateway/package-lock.json
 dbs/db_order/data
 dbs/db_auth/data
 .env

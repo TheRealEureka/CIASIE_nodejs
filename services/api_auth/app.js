@@ -19,9 +19,7 @@ app.use(express.urlencoded({extended: false}));
 app.use('/', indexRouter);
 
 const error_handler = async (err, req, res) => {
-
     return res.status(err).location(req.path).json(err);
-
 };
 app.use(error_handler);
 

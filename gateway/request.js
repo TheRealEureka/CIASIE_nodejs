@@ -1,5 +1,4 @@
 
-
 async function send(url, method = 'GET', body = {}, headers = {}) {
     headers['Content-Type'] = 'application/json';
     let options = {

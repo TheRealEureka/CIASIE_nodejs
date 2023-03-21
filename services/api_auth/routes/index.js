@@ -16,6 +16,9 @@ const sign = {
     algorithm:  "RS256"
 }
 
+router.get('/', async (req, res, next) => {
+   res.json({message: "Welcome to the auth service"});
+});
 router.post('/token', async (req, res, next) => {
     try {
         if(req.body.email !== undefined && req.body.password !== undefined){

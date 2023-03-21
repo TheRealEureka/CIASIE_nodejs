@@ -59,14 +59,20 @@ services:
       networks:
         - api_auth_network
   gateway:
-    image: node:alpine
-    container_name: gateway-nodejs
-    command: "npm run watch"
-    working_dir: /usr/src/app
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./api:/usr/src/app
+      image: node:alpine
+      container_name: gateway-nodejs
+      command: "npm run watch"
+      working_dir: /usr/src/app
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./gateway:/usr/src/app
+      networks:
+        - api_network
+        - api_auth_network
+      links:
+        - api_order
+        - api_auth
 networks:
   api_network:
     driver: bridge
