@@ -1,10 +1,10 @@
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const orderRouter = require('./routes/orders');
+const sandwichsRouter = require('./routes/sandwichs');
 
 
 const app = express();
@@ -24,10 +24,12 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/orders', orderRouter);
+app.use('/sandwichs', sandwichsRouter);
+
 
 
 // Route pour les erreurs 404
-app.use((req, res, next) => {
+app.use((req, res) => {
     res.status(404).json({error: 'Not Found'});
 });
 
