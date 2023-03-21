@@ -42,7 +42,7 @@ services:
     volumes:
       - ./services/api_auth:/usr/src/app
     networks:
-      - api_auth_network
+      - api_network
     depends_on:
       - db_auth
     links:
@@ -57,7 +57,7 @@ services:
         - ./dbs/db_auth/data:/var/lib/mysql #synchronise le répertoire local ./db/data avec le répertoire du container /var/lib/mysql
         - ./dbs/db_auth/sql:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
       networks:
-        - api_auth_network
+        - api_network
   gateway:
       image: node:alpine
       container_name: gateway-nodejs
@@ -69,13 +69,11 @@ services:
         - ./gateway:/usr/src/app
       networks:
         - api_network
-        - api_auth_network
       links:
         - api_order
         - api_auth
 networks:
   api_network:
     driver: bridge
-  api_auth_network:
-    driver: bridge
+
 
