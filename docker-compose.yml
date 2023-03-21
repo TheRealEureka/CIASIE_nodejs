@@ -58,6 +58,15 @@ services:
         - ./dbs/db_auth/sql:/docker-entrypoint-initdb.d #initialise la base de données à l'aide des fichiers SQL présents dans le volume local ./db/sql
       networks:
         - api_auth_network
+  gateway:
+    image: node:alpine
+    container_name: gateway-nodejs
+    command: "npm run watch"
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/usr/src/app
 networks:
   api_network:
     driver: bridge
