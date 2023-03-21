@@ -77,10 +77,13 @@ services:
   database:
       container_name: database
       image: postgis/postgis:13-master
+      ports:
+        - 5432:5432
       # Required when running on platform other than amd64, like Apple M1/M2:
       # platform: linux/amd64
       volumes:
-        - ./data/database:/var/lib/postgresql/data
+        - ./csvDBtoImport/data:/docker-entrypoint-initdb.d/data
+        - ./csvDBtoImport/sql/1schema.sql:/docker-entrypoint-initdb.d/1schema.sql
       networks:
         - default
       environment:
