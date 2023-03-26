@@ -50,6 +50,7 @@ docker compose run --rm gateway npm install
 docker compose up -d
 ```
 
+6: le td9 Sur Directus est accessible sur la branche directus . 
 
 ## Membres du groupe
 
